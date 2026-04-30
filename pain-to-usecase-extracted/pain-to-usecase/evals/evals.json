@@ -1,0 +1,23 @@
+{
+  "skill_name": "pain-to-usecase",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Admins have no way to know if a device's BitLocker recovery key has been used. When a user triggers recovery (e.g., after a BIOS update), IT has zero visibility into whether the key was consumed and should be rotated. This is a security risk because a used recovery key is essentially compromised.",
+      "expected_output": "Skill should ask 8-12 clarifying questions covering personas, UI placement, API needs, scope handling, MSP, notifications, analytics, and existing customer impact before generating a 10-section use case document.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We keep getting complaints from MSP partners that they can't see BitLocker compliance status across all their customer sites from a single pane. They have to log into each customer's server individually to check encryption status, which is impractical when managing 50+ customers.",
+      "expected_output": "Skill should recognize MSP/Summary Server as critical sections, ask about cross-site aggregation, per-customer segmentation, role handling for MSP technicians vs admins, and produce a document where the MSP and Summary Server section is detailed rather than 'Not applicable'.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "There's no way for admins to enforce a grace period for PIN enrollment. When we deploy TPM+PIN policies, some users never set their PIN and we have no mechanism to escalate or enforce after a deadline.",
+      "expected_output": "Skill should explore the progressive encryption angle, ask about escalation workflows, notification triggers, configurable grace periods, and what happens when the deadline passes. The generated document should have substantive Notification and Alerts and User Journey sections.",
+      "files": []
+    }
+  ]
+}
