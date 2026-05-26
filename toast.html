@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Access Request</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dialog {
+            background: #fff;
+            width: 520px;
+            border-radius: 4px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+        }
+
+        .title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .title-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-bar-icon { font-size: 16px; }
+
+        .title-bar-title { font-size: 12px; color: #333; }
+
+        .title-bar-close {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .title-bar-close:hover { background: #e81123; color: #fff; }
+
+        .header-banner {
+            background: linear-gradient(to right, #e65100, #f9a825, #fff8e1);
+            padding: 10px 16px;
+        }
+
+        .header-banner h2 {
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .content { padding: 20px 24px; }
+
+        .question {
+            font-size: 13px;
+            color: #1a1a1a;
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+
+        .app-summary {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .app-info-table { font-size: 12.5px; }
+
+        .app-info-table tr td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        .app-info-table tr td:first-child {
+            font-weight: 600;
+            color: #444;
+            padding-right: 12px;
+            white-space: nowrap;
+        }
+
+        .app-info-table tr td:last-child { color: #222; }
+
+        .verified-yes { font-weight: 700; color: #1b5e20; }
+
+        .details-row { display: none; }
+        .details-row.visible { display: table-row; }
+
+        .toggle-details {
+            font-size: 11.5px;
+            color: #0066cc;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            padding: 4px 0 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toggle-details:hover { text-decoration: underline; }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-row > label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 14px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .radio-option input { accent-color: #e65100; }
+
+        .jit-duration {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-left: 6px;
+            padding-left: 10px;
+            border-left: 1px solid #ccc;
+        }
+
+        .jit-duration.visible { display: flex; }
+
+        .jit-duration label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .jit-duration select {
+            padding: 4px 8px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .reason-section { margin-bottom: 6px; }
+
+        .reason-section label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .reason-section label .required { color: #d32f2f; }
+
+        .reason-section textarea {
+            width: 100%;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-family: inherit;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            resize: vertical;
+            min-height: 54px;
+        }
+
+        .reason-section textarea:focus {
+            outline: none;
+            border-color: #e65100;
+            box-shadow: 0 0 0 2px rgba(230,81,0,0.12);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 12px 24px 18px;
+        }
+
+        .btn {
+            padding: 7px 20px;
+            font-size: 13px;
+            font-family: inherit;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-cancel { background: #fff; border: 1px solid #bbb; color: #333; }
+        .btn-cancel:hover { background: #f5f5f5; }
+
+        .btn-submit { background: #e65100; border: 1px solid #bf360c; color: #fff; font-weight: 600; }
+        .btn-submit:hover { background: #bf360c; }
+        .btn-submit:disabled { background: #ccc; border-color: #bbb; color: #888; cursor: not-allowed; }
+
+        .success-message { display: none; text-align: center; padding: 30px 20px; }
+        .success-message .checkmark { font-size: 44px; margin-bottom: 10px; }
+        .success-message h3 { color: #2e7d32; margin-bottom: 6px; }
+        .success-message p { font-size: 13px; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="dialog">
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <span class="title-bar-icon">🛡️</span>
+                <span class="title-bar-title">Application Access Control</span>
+            </div>
+            <button class="title-bar-close" onclick="window.close()">✕</button>
+        </div>
+
+        <div class="header-banner">
+            <h2>Application Access Request</h2>
+        </div>
+
+        <div class="content" id="mainContent">
+            <p class="question">This application has been blocked by your organization. Submit a request to gain access.</p>
+
+            <div class="app-summary">
+                <div class="app-icon">📦</div>
+                <div>
+                    <table class="app-info-table">
+                        <tr><td>Program name:</td><td>cmd.exe</td></tr>
+                        <tr><td>Verified publisher:</td><td class="verified-yes">Microsoft Corporation</td></tr>
+                        <tr><td>File path:</td><td>C:\Windows\System32\cmd.exe</td></tr>
+                        <tr class="details-row"><td>Argument:</td><td>"C:\Windows\System32\cmd.exe"</td></tr>
+                        <tr class="details-row"><td>SHA-256:</td><td style="font-size:11px;word-break:break-all;">b99d61d874728edc0918ca0eb10eab93d381e7367e377406e65963366c874714</td></tr>
+                    </table>
+                    <button class="toggle-details" onclick="toggleDetails()">
+                        <span id="toggleIcon">⊕</span> <span id="toggleText">Show details</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>Access Type:</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="accessType" value="permanent" onchange="toggleJIT()">
+                        <span>Permanent</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="accessType" value="jit" onchange="toggleJIT()" checked>
+                        <span>Just-in-Time</span>
+                    </label>
+                </div>
+                <div class="jit-duration visible" id="jitOptions">
+                    <label>Duration:</label>
+                    <select id="jitDuration">
+                        <option value="1">1 Hour</option>
+                        <option value="2">2 Hours</option>
+                        <option value="4">4 Hours</option>
+                        <option value="8">8 Hours</option>
+                        <option value="12">12 Hours</option>
+                        <option value="24">24 Hours</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="reason-section">
+                <label>Reason <span class="required">*</span></label>
+                <textarea id="reasonInput" placeholder="Provide business justification for accessing this application..." oninput="validateForm()"></textarea>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <div class="checkmark">✅</div>
+            <h3>Request Submitted</h3>
+            <p>Your access request has been sent for approval.<br>You will be notified once reviewed.</p>
+        </div>
+
+        <div class="footer" id="footerButtons">
+            <button class="btn btn-cancel" onclick="window.close()">Cancel</button>
+            <button class="btn btn-submit" id="submitBtn" disabled onclick="submitRequest()">Request Access</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails() {
+            const rows = document.querySelectorAll('.details-row');
+            const icon = document.getElementById('toggleIcon');
+            const text = document.getElementById('toggleText');
+            const visible = !rows[0].classList.contains('visible');
+            rows.forEach(r => r.classList.toggle('visible', visible));
+            icon.textContent = visible ? '⊖' : '⊕';
+            text.textContent = visible ? 'Hide details' : 'Show details';
+        }
+
+        function toggleJIT() {
+            const jit = document.querySelector('input[name="accessType"][value="jit"]').checked;
+            document.getElementById('jitOptions').classList.toggle('visible', jit);
+        }
+
+        function validateForm() {
+            document.getElementById('submitBtn').disabled = document.getElementById('reasonInput').value.trim().length === 0;
+        }
+
+        function submitRequest() {
+            const accessType = document.querySelector('input[name="accessType"]:checked').value;
+            const reason = document.getElementById('reasonInput').value.trim();
+            const duration = accessType === 'jit' ? document.getElementById('jitDuration').value + ' Hour(s)' : 'Permanent';
+            console.log('Access Request:', { accessType, duration, reason });
+
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('footerButtons').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        toggleJIT();
+    </script>
+</body>
+</html>
