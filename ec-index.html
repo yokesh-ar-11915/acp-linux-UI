@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Application Control Plus</title>
-  <link rel="stylesheet" href="css/style.css?v=8" />
+  <title>Endpoint Central — Application Control</title>
+  <link rel="stylesheet" href="css/ec-style.css?v=18" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body>
@@ -12,21 +12,25 @@
   <header class="topbar">
     <div class="topbar-left">
       <div class="brand">
-        <span class="brand-icon"><i class="fa-solid fa-shield-halved"></i></span>
-        <span class="brand-text">Application Control Plus</span>
+        <span class="brand-icon"><i class="fa-solid fa-circle-notch"></i></span>
+        <span class="brand-text">Endpoint Central</span>
       </div>
     </div>
     <nav class="topbar-nav" id="topNav">
-      <a href="#overview" class="topnav-item active" data-module="overview">Overview</a>
-      <a href="#manage" class="topnav-item" data-module="manage">Manage</a>
-      <a href="#policies" class="topnav-item" data-module="policies">Policies</a>
-      <a href="#insight" class="topnav-item" data-module="insight">Insight</a>
-      <a href="#reports" class="topnav-item" data-module="reports">Reports</a>
-      <a href="#settings" class="topnav-item" data-module="settings">Settings</a>
+      <a href="#" class="topnav-item" data-module="ec-home">Home</a>
+      <a href="#" class="topnav-item" data-module="ec-configurations">Configurations</a>
+      <a href="#" class="topnav-item" data-module="ec-threats">Threats &amp; Patches</a>
+      <a href="#" class="topnav-item" data-module="ec-software">Software Deployment</a>
+      <a href="#" class="topnav-item" data-module="ec-inventory">Inventory</a>
+      <a href="#" class="topnav-item" data-module="ec-os">OS Deployment</a>
+      <a href="#" class="topnav-item" data-module="ec-mdm">MDM</a>
+      <a href="#" class="topnav-item" data-module="ec-tools">Tools</a>
+      <a href="#" class="topnav-item" data-module="ec-agent">Agent</a>
+      <a href="#" class="topnav-item" data-module="ec-admin">Admin</a>
+      <a href="#" class="topnav-item active" data-module="application-control">Application Control</a>
       <div class="topnav-overflow" id="overflowBtn">
         <span class="overflow-dots">•••</span>
-        <div class="overflow-menu" id="overflowMenu">
-        </div>
+        <div class="overflow-menu" id="overflowMenu"></div>
       </div>
     </nav>
     <div class="topbar-right">
@@ -50,7 +54,7 @@
 
   <!-- MAIN LAYOUT -->
   <div class="main-wrapper">
-    <!-- SIDEBAR (hidden for some modules) -->
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <nav class="sidebar-nav" id="sidebarNav"></nav>
       <button class="sidebar-collapse-btn" id="sidebarCollapseBtn"><i class="fa fa-angle-double-left"></i></button>
@@ -65,11 +69,15 @@
     &copy; 2026 Zoho Corporation Private Limited. All rights reserved.
   </footer>
 
-  <!-- CHAT BUTTON -->
-  <div class="chat-fab" title="Chat"><i class="fa fa-bars"></i></div>
+  <!-- PERSONALIZED DEMO FAB -->
+  <div class="demo-fab" id="demoFab">
+    <div class="demo-fab-icon"><i class="fa fa-desktop"></i></div>
+    <div class="demo-fab-label">Personalized<br/>demo</div>
+    <button class="demo-fab-close" id="demoFabClose">&times;</button>
+  </div>
 
-  <script src="js/menu.js?v=8"></script>
-  <script src="js/pages.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/ec-menu.js?v=4"></script>
+  <script src="js/ec-pages.js?v=42"></script>
+  <script src="js/ec-app.js?v=4"></script>
 </body>
 </html>
