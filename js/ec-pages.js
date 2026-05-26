@@ -2467,57 +2467,53 @@ function ecOpenDeployPolicySummary(groupName, groupCategory, flexibility, associ
     computers: [], appGroups: [], allowedApps: [], blockedApps: [], unmanagedApps: [], requestedApps: [], unmanagedElevatedApps: [], elevationExcludedApps: [], elevatedApps: []
   };
 
-  /* --- Computers tab --- */
+  /* --- Computers (accordion) --- */
   const computerRows = data.computers.map(c => {
     const remarksCls = c.remarks.includes('Pre-requisite') ? ' style="color:#d32f2f"' : '';
-    return `<tr>
-      <td><i class="${c.icon} os-icon"></i><a href="#" style="color:#1a73e8">${c.name}</a></td>
-      <td>${c.domain}</td>
-      <td>${c.lastContact}</td>
-      <td>${c.status}</td>
-      <td${remarksCls}>${c.remarks}</td>
-    </tr>`;
+    return `<tr><td><i class="${c.icon} os-icon"></i> ${c.name}</td><td>${c.domain}</td><td>${c.lastContact}</td><td>${c.status}</td><td${remarksCls}>${c.remarks}</td></tr>`;
   }).join('');
 
-  /* --- Application Groups tab --- */
+  /* --- Application Groups (accordion) --- */
   const appGroupRows = data.appGroups.map(g =>
-    `<tr>
-      <td><i class="${g.icon} os-icon"></i><a href="#" style="color:#1a73e8">${g.name}</a></td>
-      <td>${g.type}</td>
-      <td>${g.created}</td>
-      <td>${g.modified}</td>
-      <td style="color:#1a73e8">${g.createdBy}</td>
-      <td style="color:#1a73e8">${g.modifiedBy}</td>
-    </tr>`
+    `<tr><td><i class="${g.icon} os-icon"></i> ${g.name}</td><td>${g.type}</td><td>${g.created}</td><td>${g.modified}</td><td style="color:#1a73e8">${g.createdBy}</td><td style="color:#1a73e8">${g.modifiedBy}</td></tr>`
   ).join('');
 
-  /* --- Allowed Apps tab --- */
+  /* --- Allowed Apps (accordion) --- */
   const allowedFilterTabs = ['Vendor', 'Product Name', 'Verified Executable', 'File Hash', 'Folder Path', 'Store Apps'];
   const allowedFilterHtml = allowedFilterTabs.map((t, i) =>
     `<a href="#" class="ag-filter-tab${i === 2 ? ' active' : ''}" onclick="ecSwitchDpFilterTab(this);return false">${t}</a>`
   ).join('');
   const allowedRows = data.allowedApps.map(a =>
-    `<tr>
-      <td>${a.name}</td>
-      <td>${a.vendor}</td>
-      <td>${a.credibility}</td>
-      <td>${a.groupName}</td>
-    </tr>`
+    `<tr><td>${a.name}</td><td>${a.vendor}</td><td>${a.credibility}</td><td>${a.groupName}</td></tr>`
   ).join('');
 
-  /* --- Blocked Apps tab --- */
+  /* --- Blocked Apps (accordion) --- */
   const blockedFilterTabs = ['Vendor', 'Product Name', 'Verified Executable', 'File Hash', 'Folder Path', 'Store Apps'];
   const blockedFilterHtml = blockedFilterTabs.map((t, i) =>
     `<a href="#" class="ag-filter-tab${i === 1 ? ' active' : ''}" onclick="ecSwitchDpFilterTab(this);return false">${t}</a>`
   ).join('');
   const blockedRows = data.blockedApps.map(a =>
-    `<tr>
-      <td>${a.name}</td>
-      <td>${a.vendor}</td>
-      <td>${a.credibility}</td>
-      <td>${a.groupName}</td>
-    </tr>`
+    `<tr><td>${a.name}</td><td>${a.vendor}</td><td>${a.credibility}</td><td>${a.groupName}</td></tr>`
   ).join('');
+
+  /* --- Elevation Excluded Apps (accordion) --- */
+  const exclFilterTabs = ['Vendor', 'Product Name', 'Verified Executable', 'File Hash', 'CLSID'];
+  const exclFilterHtml = exclFilterTabs.map((t, i) =>
+    `<a href="#" class="ag-filter-tab${i === 0 ? ' active' : ''}" onclick="ecSwitchDpFilterTab(this);return false">${t}</a>`
+  ).join('');
+  const exclRows = data.elevationExcludedApps.map(a =>
+    `<tr><td>${a.name}</td><td>${a.vendor}</td><td>${a.credibility}</td><td>${a.policyName}</td></tr>`
+  ).join('');
+
+  /* --- Elevated Apps (accordion) --- */
+  const elevFilterTabs = ['Vendor', 'Product Name', 'Verified Executable', 'File Hash', 'CLSID'];
+  const elevFilterHtml = elevFilterTabs.map((t, i) =>
+    `<a href="#" class="ag-filter-tab${i === 0 ? ' active' : ''}" onclick="ecSwitchDpFilterTab(this);return false">${t}</a>`
+  ).join('');
+  const elevRows = data.elevatedApps.map(a => {
+    const badgeCls = a.decision === 'Approved' ? 'color:#2e7d32;background:#e8f5e9' : 'color:#e65100;background:#fff3e0';
+    return `<tr><td>${a.name}</td><td>${a.vendor}</td><td>${a.credibility}</td><td>${a.elevatedBy}</td><td><span style="padding:2px 10px;border-radius:10px;font-size:12px;font-weight:500;${badgeCls}">${a.decision}</span></td><td>${a.policyName}</td></tr>`;
+  }).join('');
 
   /* --- Unmanaged Apps tab --- */
   const unmanagedFilterTabs = ['Product Name', 'Verified Executable', 'File Hash', 'Store Apps'];
@@ -2571,37 +2567,6 @@ function ecOpenDeployPolicySummary(groupName, groupCategory, flexibility, associ
     </tr>`
   ).join('');
 
-  /* --- Elevation Excluded Apps tab (Windows only) --- */
-  const exclFilterTabs = ['Vendor', 'Product Name', 'Verified Executable', 'File Hash', 'CLSID'];
-  const exclFilterHtml = exclFilterTabs.map((t, i) =>
-    `<a href="#" class="ag-filter-tab${i === 0 ? ' active' : ''}" onclick="ecSwitchDpFilterTab(this);return false">${t}</a>`
-  ).join('');
-  const exclRows = data.elevationExcludedApps.map(a =>
-    `<tr>
-      <td>${a.name}</td>
-      <td>${a.vendor}</td>
-      <td>${a.credibility}</td>
-      <td>${a.policyName}</td>
-    </tr>`
-  ).join('');
-
-  /* --- Elevated Apps tab (Windows only) --- */
-  const elevFilterTabs = ['Vendor', 'Product Name', 'Verified Executable', 'File Hash', 'CLSID'];
-  const elevFilterHtml = elevFilterTabs.map((t, i) =>
-    `<a href="#" class="ag-filter-tab${i === 0 ? ' active' : ''}" onclick="ecSwitchDpFilterTab(this);return false">${t}</a>`
-  ).join('');
-  const elevRows = data.elevatedApps.map(a => {
-    const badgeCls = a.decision === 'Approved' ? 'color:#2e7d32;background:#e8f5e9' : 'color:#e65100;background:#fff3e0';
-    return `<tr>
-      <td>${a.name}</td>
-      <td>${a.vendor}</td>
-      <td>${a.credibility}</td>
-      <td>${a.elevatedBy}</td>
-      <td><span style="padding:2px 10px;border-radius:10px;font-size:12px;font-weight:500;${badgeCls}">${a.decision}</span></td>
-      <td>${a.policyName}</td>
-    </tr>`;
-  }).join('');
-
   content.innerHTML = `
     <div class="dp-summary-page">
       <!-- Header -->
@@ -2629,163 +2594,255 @@ function ecOpenDeployPolicySummary(groupName, groupCategory, flexibility, associ
 
       <!-- Main Tabs -->
       <div class="dp-tabs">
-        <a href="#" class="dp-tab active" onclick="ecSwitchDpTab(this,'dp-tab-computers');return false">Computers</a>
-        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-appgroups');return false">Application Groups</a>
-        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-allowed');return false">Allowed Apps</a>
-        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-blocked');return false">Blocked Apps</a>
+        <a href="#" class="dp-tab active" onclick="ecSwitchDpTab(this,'dp-tab-summary');return false">Policy Summary</a>
         <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-unmanaged');return false">Unmanaged Apps</a>
         <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-requested');return false">Requested Apps</a>
-        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-ue');return false">Unmanaged Apps for Elevation</a>
-        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-excl');return false">Elevation Excluded Apps</a>
-        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-elevated');return false">Elevated Apps</a>
+        <a href="#" class="dp-tab" onclick="ecSwitchDpTab(this,'dp-tab-ue');return false">Unmanaged Elevated Apps</a>
       </div>
 
-      <!-- Tab: Computers -->
-      <div class="dp-tab-content" id="dp-tab-computers">
-        <div class="dp-content-toolbar">
-          <span class="filter-label">Filter By :</span>
-          <select><option>Platform type</option><option>Windows</option><option>Mac</option><option>Linux</option></select>
-          <select><option>Deployment Sta...</option><option>In Progress</option><option>Completed</option><option>Failed</option></select>
-          <div class="toolbar-right" style="margin-left:auto">
-            <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
-            <span class="icon-btn"><i class="fa fa-search"></i></span>
-            <span class="icon-btn"><i class="fa fa-columns"></i></span>
-            <span class="icon-btn"><i class="fa fa-download"></i></span>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr>
-              <th>Computer Name <i class="fa fa-sort sort-icon"></i></th>
-              <th>Domain Name</th>
-              <th>Last Contact Time</th>
-              <th>Deployment Status</th>
-              <th>Remarks</th>
-            </tr></thead>
-            <tbody>${computerRows}</tbody>
-          </table>
-        </div>
-        <div class="table-pagination">
-          <span>1 - ${Math.min(25, data.computers.length)} of <a href="#" style="color:#1a73e8">Total Records</a></span>
-          <select><option>25</option></select>
-          <span class="page-btn">&lt;</span>
-          <span class="page-btn">&gt;</span>
-        </div>
-      </div>
-
-      <!-- Tab: Application Groups -->
-      <div class="dp-tab-content" id="dp-tab-appgroups" style="display:none">
-        <div class="dp-content-toolbar">
-          <span class="filter-label">Filter By :</span>
-          <select><option>Platform type</option><option>Windows</option><option>Mac</option><option>Linux</option></select>
-          <select><option>Group Type</option><option>Allowlist</option><option>Blocklist</option></select>
-          <div class="toolbar-right" style="margin-left:auto">
-            <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
-            <span class="icon-btn"><i class="fa fa-search"></i></span>
-            <span class="icon-btn"><i class="fa fa-columns"></i></span>
-            <span class="icon-btn"><i class="fa fa-download"></i></span>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead><tr>
-              <th>Application Group Name <i class="fa fa-sort sort-icon"></i></th>
-              <th>Group Type</th>
-              <th>Created Time</th>
-              <th>Last Modified Time</th>
-              <th>Created By</th>
-              <th>Last Modified By</th>
-            </tr></thead>
-            <tbody>${appGroupRows}</tbody>
-          </table>
-        </div>
-        <div class="table-pagination">
-          <span>1 - ${data.appGroups.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
-          <select><option>25</option></select>
-          <span class="page-btn">&lt;</span>
-          <span class="page-btn">&gt;</span>
-        </div>
-      </div>
-
-      <!-- Tab: Allowed Apps -->
-      <div class="dp-tab-content" id="dp-tab-allowed" style="display:none">
-        <div class="dp-apps-layout">
-          <div class="dp-apps-sidebar">
-            <div class="dp-platform-toggle">
-              <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
-              <span class="dp-plat-btn" title="Mac"><i class="fab fa-apple"></i></span>
-              <span class="dp-plat-btn" title="Linux"><i class="fab fa-linux"></i></span>
+      <!-- Tab: Policy Summary -->
+      <div class="dp-tab-content" id="dp-tab-summary">
+        <div class="dp-accordion">
+          <div class="dp-acc-section">
+            <div class="dp-acc-header" onclick="ecToggleAccordion(this)">
+              <i class="fa fa-chevron-right dp-acc-arrow"></i>
+              <i class="fa fa-desktop dp-acc-icon" style="color:#1565c0"></i>
+              <span class="dp-acc-title">Computers</span>
+              <span class="dp-acc-count">${data.computers.length}</span>
             </div>
-            ${allowedFilterHtml}
-          </div>
-          <div class="dp-apps-main">
-            <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
-              <div class="toolbar-right" style="margin-left:auto">
-                <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
-                <span class="icon-btn"><i class="fa fa-search"></i></span>
-                <span class="icon-btn"><i class="fa fa-columns"></i></span>
-                <span class="icon-btn"><i class="fa fa-download"></i></span>
+            <div class="dp-acc-body" style="display:none">
+              <div class="dp-content-toolbar">
+                <span class="filter-label">Filter By :</span>
+                <select><option>Platform type</option><option>Windows</option><option>Mac</option><option>Linux</option></select>
+                <select><option>Deployment Sta...</option><option>In Progress</option><option>Completed</option><option>Failed</option></select>
+                <div class="toolbar-right" style="margin-left:auto">
+                  <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
+                  <span class="icon-btn"><i class="fa fa-search"></i></span>
+                  <span class="icon-btn"><i class="fa fa-columns"></i></span>
+                  <span class="icon-btn"><i class="fa fa-download"></i></span>
+                </div>
+              </div>
+              <div class="table-wrap"><table class="data-table"><thead><tr>
+                <th>Computer Name <i class="fa fa-sort sort-icon"></i></th>
+                <th>Domain Name</th>
+                <th>Last Contact Time</th>
+                <th>Deployment Status</th>
+                <th>Remarks</th>
+              </tr></thead><tbody>${computerRows}</tbody></table></div>
+              <div class="table-pagination">
+                <span>1 - ${Math.min(25, data.computers.length)} of <a href="#" style="color:#1a73e8">Total Records</a></span>
+                <select><option>25</option></select>
+                <span class="page-btn">&lt;</span>
+                <span class="page-btn">&gt;</span>
               </div>
             </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead><tr>
-                  <th>Executable Name</th>
-                  <th>Vendor Name</th>
-                  <th>Publisher Credibility</th>
-                  <th>Application Group Name <i class="fa fa-sort sort-icon"></i></th>
-                </tr></thead>
-                <tbody>${allowedRows}</tbody>
-              </table>
-            </div>
-            <div class="table-pagination">
-              <span>1 - ${data.allowedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
-              <select><option>25</option></select>
-              <span class="page-btn">&lt;</span>
-              <span class="page-btn">&gt;</span>
-            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Tab: Blocked Apps -->
-      <div class="dp-tab-content" id="dp-tab-blocked" style="display:none">
-        <div class="dp-apps-layout">
-          <div class="dp-apps-sidebar">
-            <div class="dp-platform-toggle">
-              <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
-              <span class="dp-plat-btn" title="Mac"><i class="fab fa-apple"></i></span>
-              <span class="dp-plat-btn" title="Linux"><i class="fab fa-linux"></i></span>
+          <div class="dp-acc-section">
+            <div class="dp-acc-header" onclick="ecToggleAccordion(this)">
+              <i class="fa fa-chevron-right dp-acc-arrow"></i>
+              <i class="fa fa-layer-group dp-acc-icon" style="color:#6a1b9a"></i>
+              <span class="dp-acc-title">Application Groups</span>
+              <span class="dp-acc-count">${data.appGroups.length}</span>
             </div>
-            ${blockedFilterHtml}
-          </div>
-          <div class="dp-apps-main">
-            <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
-              <span class="filter-label">Filter By :</span>
-              <select><option>Publisher Credib...</option><option>Verified Publisher</option><option>Unverified Publisher</option></select>
-              <div class="toolbar-right" style="margin-left:auto">
-                <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
-                <span class="icon-btn"><i class="fa fa-search"></i></span>
-                <span class="icon-btn"><i class="fa fa-columns"></i></span>
-                <span class="icon-btn"><i class="fa fa-download"></i></span>
+            <div class="dp-acc-body" style="display:none">
+              <div class="dp-content-toolbar">
+                <span class="filter-label">Filter By :</span>
+                <select><option>Platform type</option><option>Windows</option><option>Mac</option><option>Linux</option></select>
+                <select><option>Group Type</option><option>Allowlist</option><option>Blocklist</option></select>
+                <div class="toolbar-right" style="margin-left:auto">
+                  <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
+                  <span class="icon-btn"><i class="fa fa-search"></i></span>
+                  <span class="icon-btn"><i class="fa fa-columns"></i></span>
+                  <span class="icon-btn"><i class="fa fa-download"></i></span>
+                </div>
+              </div>
+              <div class="table-wrap"><table class="data-table"><thead><tr>
+                <th>Application Group Name <i class="fa fa-sort sort-icon"></i></th>
+                <th>Group Type</th>
+                <th>Created Time</th>
+                <th>Last Modified Time</th>
+                <th>Created By</th>
+                <th>Last Modified By</th>
+              </tr></thead><tbody>${appGroupRows}</tbody></table></div>
+              <div class="table-pagination">
+                <span>1 - ${data.appGroups.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
+                <select><option>25</option></select>
+                <span class="page-btn">&lt;</span>
+                <span class="page-btn">&gt;</span>
               </div>
             </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead><tr>
-                  <th>Product Name</th>
-                  <th>Vendor Name</th>
-                  <th>Publisher Credibility</th>
-                  <th>Application Group Name <i class="fa fa-sort sort-icon"></i></th>
-                </tr></thead>
-                <tbody>${blockedRows}</tbody>
-              </table>
+          </div>
+          <div class="dp-acc-section">
+            <div class="dp-acc-header" onclick="ecToggleAccordion(this)">
+              <i class="fa fa-chevron-right dp-acc-arrow"></i>
+              <i class="fa fa-circle-check dp-acc-icon" style="color:#2e7d32"></i>
+              <span class="dp-acc-title">Allowed Apps</span>
+              <span class="dp-acc-count">${data.allowedApps.length}</span>
             </div>
-            <div class="table-pagination">
-              <span>1 - ${data.blockedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
-              <select><option>25</option></select>
-              <span class="page-btn">&lt;</span>
-              <span class="page-btn">&gt;</span>
+            <div class="dp-acc-body" style="display:none">
+              <div class="dp-apps-layout">
+                <div class="dp-apps-sidebar">
+                  <div class="dp-platform-toggle">
+                    <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
+                    <span class="dp-plat-btn" title="Mac"><i class="fab fa-apple"></i></span>
+                    <span class="dp-plat-btn" title="Linux"><i class="fab fa-linux"></i></span>
+                  </div>
+                  ${allowedFilterHtml}
+                </div>
+                <div class="dp-apps-main">
+                  <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
+                    <div class="toolbar-right" style="margin-left:auto">
+                      <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
+                      <span class="icon-btn"><i class="fa fa-search"></i></span>
+                      <span class="icon-btn"><i class="fa fa-columns"></i></span>
+                      <span class="icon-btn"><i class="fa fa-download"></i></span>
+                    </div>
+                  </div>
+                  <div class="table-wrap"><table class="data-table"><thead><tr>
+                    <th>Executable Name</th>
+                    <th>Vendor Name</th>
+                    <th>Publisher Credibility</th>
+                    <th>Application Group Name <i class="fa fa-sort sort-icon"></i></th>
+                  </tr></thead><tbody>${allowedRows}</tbody></table></div>
+                  <div class="table-pagination">
+                    <span>1 - ${data.allowedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
+                    <select><option>25</option></select>
+                    <span class="page-btn">&lt;</span>
+                    <span class="page-btn">&gt;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dp-acc-section">
+            <div class="dp-acc-header" onclick="ecToggleAccordion(this)">
+              <i class="fa fa-chevron-right dp-acc-arrow"></i>
+              <i class="fa fa-ban dp-acc-icon" style="color:#c62828"></i>
+              <span class="dp-acc-title">Blocked Apps</span>
+              <span class="dp-acc-count">${data.blockedApps.length}</span>
+            </div>
+            <div class="dp-acc-body" style="display:none">
+              <div class="dp-apps-layout">
+                <div class="dp-apps-sidebar">
+                  <div class="dp-platform-toggle">
+                    <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
+                    <span class="dp-plat-btn" title="Mac"><i class="fab fa-apple"></i></span>
+                    <span class="dp-plat-btn" title="Linux"><i class="fab fa-linux"></i></span>
+                  </div>
+                  ${blockedFilterHtml}
+                </div>
+                <div class="dp-apps-main">
+                  <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
+                    <span class="filter-label">Filter By :</span>
+                    <select><option>Publisher Credib...</option><option>Verified Publisher</option><option>Unverified Publisher</option></select>
+                    <div class="toolbar-right" style="margin-left:auto">
+                      <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
+                      <span class="icon-btn"><i class="fa fa-search"></i></span>
+                      <span class="icon-btn"><i class="fa fa-columns"></i></span>
+                      <span class="icon-btn"><i class="fa fa-download"></i></span>
+                    </div>
+                  </div>
+                  <div class="table-wrap"><table class="data-table"><thead><tr>
+                    <th>Product Name</th>
+                    <th>Vendor Name</th>
+                    <th>Publisher Credibility</th>
+                    <th>Application Group Name <i class="fa fa-sort sort-icon"></i></th>
+                  </tr></thead><tbody>${blockedRows}</tbody></table></div>
+                  <div class="table-pagination">
+                    <span>1 - ${data.blockedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
+                    <select><option>25</option></select>
+                    <span class="page-btn">&lt;</span>
+                    <span class="page-btn">&gt;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dp-acc-section">
+            <div class="dp-acc-header" onclick="ecToggleAccordion(this)">
+              <i class="fa fa-chevron-right dp-acc-arrow"></i>
+              <i class="fa fa-shield-halved dp-acc-icon" style="color:#e65100"></i>
+              <span class="dp-acc-title">Elevation Excluded Apps</span>
+              <span class="dp-acc-count">${data.elevationExcludedApps.length}</span>
+            </div>
+            <div class="dp-acc-body" style="display:none">
+              <div class="dp-apps-layout">
+                <div class="dp-apps-sidebar">
+                  <div class="dp-platform-toggle">
+                    <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
+                  </div>
+                  ${exclFilterHtml}
+                </div>
+                <div class="dp-apps-main">
+                  <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
+                    <span class="filter-label">Filter By :</span>
+                    <select><option>Publisher Credib...</option><option>Verified Publisher</option><option>Unverified Publisher</option></select>
+                    <div class="toolbar-right" style="margin-left:auto">
+                      <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
+                      <span class="icon-btn"><i class="fa fa-search"></i></span>
+                      <span class="icon-btn"><i class="fa fa-columns"></i></span>
+                      <span class="icon-btn"><i class="fa fa-download"></i></span>
+                    </div>
+                  </div>
+                  <div class="table-wrap"><table class="data-table"><thead><tr>
+                    <th>Product Name</th>
+                    <th>Vendor Name</th>
+                    <th>Publisher Credibility</th>
+                    <th>EPM Policy Name <i class="fa fa-sort sort-icon"></i></th>
+                  </tr></thead><tbody>${exclRows}</tbody></table></div>
+                  <div class="table-pagination">
+                    <span>1 - ${data.elevationExcludedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
+                    <select><option>25</option></select>
+                    <span class="page-btn">&lt;</span>
+                    <span class="page-btn">&gt;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dp-acc-section">
+            <div class="dp-acc-header" onclick="ecToggleAccordion(this)">
+              <i class="fa fa-chevron-right dp-acc-arrow"></i>
+              <i class="fa fa-arrow-up dp-acc-icon" style="color:#00695c"></i>
+              <span class="dp-acc-title">Elevated Apps</span>
+              <span class="dp-acc-count">${data.elevatedApps.length}</span>
+            </div>
+            <div class="dp-acc-body" style="display:none">
+              <div class="dp-apps-layout">
+                <div class="dp-apps-sidebar">
+                  <div class="dp-platform-toggle">
+                    <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
+                  </div>
+                  ${elevFilterHtml}
+                </div>
+                <div class="dp-apps-main">
+                  <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
+                    <span class="filter-label">Filter By :</span>
+                    <select><option>Elevation Decision</option><option>Approved</option><option>Pending</option><option>Denied</option></select>
+                    <select><option>Publisher Credib...</option><option>Verified Publisher</option><option>Unverified Publisher</option></select>
+                    <div class="toolbar-right" style="margin-left:auto">
+                      <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
+                      <span class="icon-btn"><i class="fa fa-search"></i></span>
+                      <span class="icon-btn"><i class="fa fa-columns"></i></span>
+                      <span class="icon-btn"><i class="fa fa-download"></i></span>
+                    </div>
+                  </div>
+                  <div class="table-wrap"><table class="data-table"><thead><tr>
+                    <th>Product Name</th>
+                    <th>Vendor Name</th>
+                    <th>Publisher Credibility</th>
+                    <th>Elevated By (User)</th>
+                    <th>Elevation Decision</th>
+                    <th>EPM Policy Name <i class="fa fa-sort sort-icon"></i></th>
+                  </tr></thead><tbody>${elevRows}</tbody></table></div>
+                  <div class="table-pagination">
+                    <span>1 - ${data.elevatedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
+                    <select><option>25</option></select>
+                    <span class="page-btn">&lt;</span>
+                    <span class="page-btn">&gt;</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2966,89 +3023,6 @@ function ecOpenDeployPolicySummary(groupName, groupCategory, flexibility, associ
         </div>
       </div>
 
-      <!-- Tab: Elevation Excluded Apps -->
-      <div class="dp-tab-content" id="dp-tab-excl" style="display:none">
-        <div class="dp-apps-layout">
-          <div class="dp-apps-sidebar">
-            <div class="dp-platform-toggle">
-              <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
-            </div>
-            ${exclFilterHtml}
-          </div>
-          <div class="dp-apps-main">
-            <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
-              <span class="filter-label">Filter By :</span>
-              <select><option>Publisher Credib...</option><option>Verified Publisher</option><option>Unverified Publisher</option></select>
-              <div class="toolbar-right" style="margin-left:auto">
-                <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
-                <span class="icon-btn"><i class="fa fa-search"></i></span>
-                <span class="icon-btn"><i class="fa fa-columns"></i></span>
-                <span class="icon-btn"><i class="fa fa-download"></i></span>
-              </div>
-            </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead><tr>
-                  <th>Product Name</th>
-                  <th>Vendor Name</th>
-                  <th>Publisher Credibility</th>
-                  <th>EPM Policy Name <i class="fa fa-sort sort-icon"></i></th>
-                </tr></thead>
-                <tbody>${exclRows}</tbody>
-              </table>
-            </div>
-            <div class="table-pagination">
-              <span>1 - ${data.elevationExcludedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
-              <select><option>25</option></select>
-              <span class="page-btn">&lt;</span>
-              <span class="page-btn">&gt;</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tab: Elevated Apps -->
-      <div class="dp-tab-content" id="dp-tab-elevated" style="display:none">
-        <div class="dp-apps-layout">
-          <div class="dp-apps-sidebar">
-            <div class="dp-platform-toggle">
-              <span class="dp-plat-btn active" title="Windows"><i class="fab fa-windows"></i></span>
-            </div>
-            ${elevFilterHtml}
-          </div>
-          <div class="dp-apps-main">
-            <div class="dp-content-toolbar" style="border-bottom:1px solid #e8e8e8">
-              <span class="filter-label">Filter By :</span>
-              <select><option>Elevation Decision</option><option>Approved</option><option>Pending</option><option>Denied</option></select>
-              <select><option>Publisher Credib...</option><option>Verified Publisher</option><option>Unverified Publisher</option></select>
-              <div class="toolbar-right" style="margin-left:auto">
-                <span class="total-records"><a href="#" style="color:#1a73e8">Total Records</a></span>
-                <span class="icon-btn"><i class="fa fa-search"></i></span>
-                <span class="icon-btn"><i class="fa fa-columns"></i></span>
-                <span class="icon-btn"><i class="fa fa-download"></i></span>
-              </div>
-            </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead><tr>
-                  <th>Product Name</th>
-                  <th>Vendor Name</th>
-                  <th>Publisher Credibility</th>
-                  <th>Elevated By (User)</th>
-                  <th>Elevation Decision</th>
-                  <th>EPM Policy Name <i class="fa fa-sort sort-icon"></i></th>
-                </tr></thead>
-                <tbody>${elevRows}</tbody>
-              </table>
-            </div>
-            <div class="table-pagination">
-              <span>1 - ${data.elevatedApps.length} of <a href="#" style="color:#1a73e8">Total Records</a></span>
-              <select><option>25</option></select>
-              <span class="page-btn">&lt;</span>
-              <span class="page-btn">&gt;</span>
-            </div>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -3062,6 +3036,19 @@ function ecSwitchDpTab(tab, panelId) {
   tab.classList.add('active');
   document.querySelectorAll('.dp-tab-content').forEach(p => p.style.display = 'none');
   document.getElementById(panelId).style.display = '';
+}
+
+/* Toggle accordion section */
+function ecToggleAccordion(header) {
+  const section = header.parentElement;
+  const body = section.querySelector('.dp-acc-body');
+  if (section.classList.contains('open')) {
+    section.classList.remove('open');
+    body.style.display = 'none';
+  } else {
+    section.classList.add('open');
+    body.style.display = '';
+  }
 }
 
 /* Switch filter tabs inside deploy policy summary */
